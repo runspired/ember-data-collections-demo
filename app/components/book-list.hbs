@@ -11,7 +11,7 @@
     <div>
       {{#each this.links.pages as |link index|}}
         <PageLink @title="page {{add index 1}}" @link={{link}} @text="{{add index 1}}" @action={{this.updatePage}} />
-        {{#if (mod index 10)}}
+        {{#if (mod index 20)}}
           <br>
         {{/if}}
       {{/each}}
