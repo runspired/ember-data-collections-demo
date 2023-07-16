@@ -8,6 +8,7 @@ import { query } from '@ember-data/json-api/request';
 import { filterEmpty } from '@ember-data/request-utils';
 import { PaginationLinks } from 'collection-demo/utils/pagination-links';
 import { use, type Reactive } from 'ember-resources';
+import { keepLatest } from 'ember-resources/util/keep-latest';
 import { AsyncContent, CurrentPage } from './current-page';
 
 export interface BookListSignature {
@@ -68,9 +69,15 @@ export default class BookListComponent extends Component<BookListSignature> {
     return options;
   }
 
-  get books(): Collection<Book> | null {
+  get currentBooks(): Collection<Book> | null {
     return this.currentPage.current.content || null;
   }
+
+  // absorbs null-flashes as underlying data changes
+  @use books = keepLatest({
+    value: () => this.currentBooks,
+    when: () => !this.currentBooks,
+  });
 
   updatePage = (url: string) => {
     this.currentUrl = url;
