@@ -1,0 +1,44 @@
+<div>
+  <label for="author">Author</label>
+  <select name="author" id="author" {{on 'input' this.update}}>
+    <option value="">--</option>
+    {{#each @authors as |author|}}
+      <option value={{author.name}}>{{author.name}}</option>
+    {{/each}}
+  </select>
+
+  <label for="genre">Genre</label>
+  <select name="genre" id="genre" {{on 'input' this.update}}>
+    <option value="">--</option>
+    {{#each @genres as |genre|}}
+      <option value={{genre.name}}>{{genre.name}}</option>
+    {{/each}}
+  </select>
+
+  <label for="title">Title Includes</label>
+  <input type="text" name="title" id="title" placeholder="--" value={{this.filter}} {{on 'input' this.update}}/>
+
+  <br>
+
+  <label for="sort">Sort By</label>
+  <select name="sort" id="sort" {{on 'input' this.update}}>
+    <option value="">--</option>
+    {{#each this.sortOptions as |sortOption|}}
+      <option value={{sortOption}}>{{sortOption}}</option>
+    {{/each}}
+  </select>
+
+  <label for="sortDirection">Direction</label>
+  <select name="sortDirection" id="sortDirection" disabled={{not this.sort}} {{on 'input' this.update}}>
+
+    {{#if this.sort}}
+      <option value="asc">Ascending</option>
+      <option value="desc">Descending</option>
+    {{else}}
+      <option value="">--</option>
+    {{/if}}
+  </select>
+
+  <hr>
+</div>
+<BookList @genre={{this.genre}} @author={{this.author}} @filter={{this.filter}} />

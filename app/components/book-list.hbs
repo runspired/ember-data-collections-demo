@@ -1,0 +1,17 @@
+<div>
+  {{#if this.books}}
+    <ul>
+      {{#each this.books.data as |book|}}
+        <li>
+          <strong>{{book.title}}</strong>
+          <br> by <em>{{book.author}}</em>
+        </li>
+      {{/each}}
+    </ul>
+    <div>
+
+    </div>
+  {{else}}
+    <p>No books found</p>
+  {{/if}}
+</div>

@@ -1,5 +1,12 @@
-{{page-title "CollectionDemo"}}
+{{page-title "Library"}}
 
-<h2 id="title">Welcome to Ember</h2>
+<table>
+  <tbody>
+    <tr>
+      <td><h2>All Books</h2><BookList /></td>
+      <td><h2>Search</h2><BookSearch @authors={{@model.authors}} @genres={{@model.genres}}/></td>
+    </tr>
+  </tbody>
+</table>
 
 {{outlet}}
