@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { service } from '@ember/service';
 import type Store from '@ember-data/store';
 import type Book from 'collection-demo/models/book';
-import { cached, tracked } from '@glimmer/tracking';
+import { tracked } from '@glimmer/tracking';
 import type { Collection } from '@ember-data/types';
 
 export interface InfiniteBookSignature {
@@ -14,26 +14,23 @@ export interface InfiniteBookSignature {
 
 class Pages<T> {
   @tracked pages: Collection<T>[] = [];
+  @tracked data: T[] = [];
 
-  constructor(pages: Collection<T>[]) {
-    this.pages = pages;
+  constructor(page: Collection<T>) {
+    this.pages = [page];
+    this.data = page.data.slice();
   }
 
-  @cached
-  get data(): T[] {
-    let data: T[] = [];
-    this.pages.forEach((page) => {
-      data = data.concat(page.data);
-    });
-    return data;
+  addPage(page: Collection<T>) {
+    this.pages.push(page);
+    this.data = this.data.concat(page.data);
   }
 }
 
 export default class InfiniteBookComponent extends Component<InfiniteBookSignature> {
   @service declare store: Store;
-  pageCollection = new Pages([this.args.allBooks]);
+  pageCollection = new Pages(this.args.allBooks);
 
-  @cached
   get books(): Book[] {
     return this.pageCollection.data;
   }
@@ -42,9 +39,7 @@ export default class InfiniteBookComponent extends Component<InfiniteBookSignatu
     const page = this.pageCollection.pages.at(-1);
     const result = await page?.next();
     if (result) {
-      this.pageCollection.pages.push(result);
-      // eslint-disable-next-line no-self-assign
-      this.pageCollection.pages = this.pageCollection.pages;
+      this.pageCollection.addPage(result);
     }
   };
 }
