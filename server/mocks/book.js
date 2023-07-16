@@ -104,6 +104,8 @@ function getLinks(books, page, limit, filter, sort, author, genre) {
 module.exports = function (app) {
   const express = require('express');
   let bookRouter = express.Router();
+  app.set('json spaces', 0);
+  app.set('env', 'production');
 
   bookRouter.get('/', function (req, res) {
     const { sort, filter, author, genre } = req.query;
@@ -164,7 +166,7 @@ module.exports = function (app) {
     const links = getLinks(books, page, limit, filter, sort, author, genre);
     const meta = getMeta(books, page, limit);
 
-    res.send({
+    res.json({
       links,
       meta,
       data,
