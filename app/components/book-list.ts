@@ -7,6 +7,9 @@ import type { Collection } from '@ember-data/types';
 import { query } from '@ember-data/json-api/request';
 import { filterEmpty } from '@ember-data/request-utils';
 import { PaginationLinks } from 'collection-demo/utils/pagination-links';
+import { use, type Reactive } from 'ember-resources';
+import { keepLatest } from 'ember-resources/util/keep-latest';
+import { AsyncContent, CurrentPage } from './current-page';
 
 export interface BookListSignature {
   Element: HTMLDivElement;
@@ -20,18 +23,38 @@ export interface BookListSignature {
   };
 }
 
-class AsyncContent<T> {
-  @tracked content: T | undefined;
-}
-
 export default class BookListComponent extends Component<BookListSignature> {
   @service declare store: Store;
   @tracked currentUrl: string | null = null;
+
+  // want owner and destruction?, use @link from ember-resources
+  //   https://ember-resources.pages.dev/funcs/link.link
+  //   (unrelated to resources)
+  //   I need to RFC this in to the framework tho
   links = new PaginationLinks();
-  dataWrapper = new AsyncContent<Collection<Book>>();
 
   // we use this to detect inbound data changes
   _firstPageOptions: { url: string } | null = null;
+
+  // exposes a .current property
+  //
+  // I don't know why TS feels the inference here isn't safe
+  currentPage: Reactive<AsyncContent<Collection<Book>>> = use(
+    this,
+    CurrentPage({
+      currentUrl: () => this.currentUrl,
+      firstPageOptions: () => this.firstPageOptions,
+      addPage: this.links.addPage,
+    })
+  );
+
+  // optional decorator @use
+  // (won't run unless accessed (which is why the current property is needed on the above)
+  @use currentPage2 = CurrentPage({
+    currentUrl: () => this.currentUrl,
+    firstPageOptions: () => this.firstPageOptions,
+    addPage: this.links.addPage,
+  });
 
   @cached
   get firstPageOptions(): { url: string } {
@@ -46,35 +69,15 @@ export default class BookListComponent extends Component<BookListSignature> {
     return options;
   }
 
-  @cached
-  get currentPage() {
-    const _firstPageOptions = this._firstPageOptions;
-    const firstPageOptions = this.firstPageOptions;
-    const currentUrl = this.currentUrl;
-
-    // if the first page options changed, we need to fetch a new first page
-    if (_firstPageOptions?.url !== firstPageOptions.url) {
-      return this.fetchPage(firstPageOptions);
-    }
-
-    return this.fetchPage(currentUrl ? { url: currentUrl } : firstPageOptions);
+  get currentBooks(): Collection<Book> | null {
+    return this.currentPage.current.content || null;
   }
 
-  get books(): Collection<Book> | null {
-    return this.currentPage.content || null;
-  }
-
-  fetchPage(options: { url: string }) {
-    const dataWrapper = this.dataWrapper;
-    const future = this.store.request<Book>(options);
-
-    future.then((books) => {
-      dataWrapper.content = books.content;
-      this.links.addPage(books.content);
-    });
-
-    return dataWrapper;
-  }
+  // absorbs null-flashes as underlying data changes
+  @use books = keepLatest({
+    value: () => this.currentBooks,
+    when: () => !this.currentBooks,
+  });
 
   updatePage = (url: string) => {
     this.currentUrl = url;

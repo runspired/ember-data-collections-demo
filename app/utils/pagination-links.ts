@@ -39,7 +39,7 @@ export class PaginationLinks {
   }
 
   get filteredPages() {
-    const { pages } = this;
+    const { pages = [] } = this;
     const filtered: { index: number; link: string }[] = [];
 
     for (let i = 0; i < pages.length; i++) {
