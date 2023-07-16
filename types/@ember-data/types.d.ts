@@ -7,8 +7,9 @@ export interface Collection<T> {
     prev: string | null;
   };
   meta: {
-    total: number;
-    pages: number;
+    currentPage: number;
+    booksTotal: number;
+    pagesTotal: number;
   };
   data: T[];
 }

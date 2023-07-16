@@ -1,3 +1,3 @@
-export default function not(value: unknown) {
+export default function not(value: unknown): boolean {
   return !value;
 }

@@ -8,13 +8,13 @@ export interface BookSearchSignature {
   Args: null;
 }
 
-type SearchKeys = 'sort' | 'filter' | 'genre' | 'author' | 'sortDirection';
+type SearchKeys = 'sort' | 'title' | 'genre' | 'author' | 'sortDirection';
 
 export default class BookListComponent extends Component<BookSearchSignature> {
   @service declare store: Store;
 
   @tracked sort: string | null = 'title';
-  @tracked filter: string | null = null;
+  @tracked title: string | null = null;
   @tracked genre: string | null = null;
   @tracked author: string | null = null;
   @tracked sortDirection = 'asc';

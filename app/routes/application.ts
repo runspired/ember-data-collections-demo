@@ -1,6 +1,12 @@
 import Store from '@ember-data/store';
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
+import { setBuildURLConfig } from '@ember-data/request-utils';
+
+setBuildURLConfig({
+  host: '/',
+  namespace: 'api',
+});
 
 export default class ApplicationRoute extends Route {
   @service declare store: Store;

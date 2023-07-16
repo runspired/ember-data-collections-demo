@@ -1,17 +1,4 @@
-interface Collection<T> {
-  links: {
-    self: string;
-    first: string;
-    last: string;
-    next: string | null;
-    prev: string | null;
-  };
-  meta: {
-    total: number;
-    pages: number;
-  };
-  data: T[];
-}
+import { Collection } from './types';
 
 export default class Store {
   request<T>(options: { url: string }): Promise<{ content: Collection<T> }>;

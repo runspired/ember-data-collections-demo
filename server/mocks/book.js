@@ -45,17 +45,30 @@ function getPage(books, page = 1, limit = DEFAULT_LIMIT) {
   return books.slice(start, end);
 }
 
-function buildLink(page = 1, limit = DEFAULT_LIMIT, filter, sort) {
+function buildLink(
+  page = 1,
+  limit = DEFAULT_LIMIT,
+  filter,
+  sort,
+  author,
+  genre
+) {
   let url = '/api/books';
   let params = [];
-  if (page) {
-    params.push(`page=${page}`);
+  if (author) {
+    params.push(`author=${author}`);
+  }
+  if (filter) {
+    params.push(`filter=${filter}`);
+  }
+  if (genre) {
+    params.push(`genre=${genre}`);
   }
   if (limit) {
     params.push(`limit=${limit}`);
   }
-  if (filter) {
-    params.push(`filter=${filter}`);
+  if (page) {
+    params.push(`page=${page}`);
   }
   if (sort) {
     params.push(`sort=${sort}`);
@@ -64,21 +77,26 @@ function buildLink(page = 1, limit = DEFAULT_LIMIT, filter, sort) {
   return params.length ? url + '?' + params.join('&') : url;
 }
 
-function getMeta(books, limit) {
+function getMeta(books, page, limit) {
   return {
-    pages: Math.ceil(books.length / limit),
-    total: books.length,
+    currentPage: page,
+    pagesTotal: Math.ceil(books.length / limit),
+    booksTotal: books.length,
   };
 }
 
-function getLinks(books, page, limit, filter, sort) {
+function getLinks(books, page, limit, filter, sort, author, genre) {
   const lastPage = Math.ceil(books.length / limit);
   const links = {
-    self: buildLink(page, limit, filter, sort),
-    first: buildLink(1, limit, filter, sort),
-    last: buildLink(lastPage, limit, filter, sort),
-    next: page < lastPage ? buildLink(page + 1, limit, filter, sort) : null,
-    prev: page > 1 ? buildLink(page - 1, limit, filter, sort) : null,
+    self: buildLink(page, limit, filter, sort, author, genre),
+    first: buildLink(1, limit, filter, sort, author, genre),
+    last: buildLink(lastPage, limit, filter, sort, author, genre),
+    next:
+      page < lastPage
+        ? buildLink(page + 1, limit, filter, sort, author, genre)
+        : null,
+    prev:
+      page > 1 ? buildLink(page - 1, limit, filter, sort, author, genre) : null,
   };
   return links;
 }
@@ -129,8 +147,8 @@ module.exports = function (app) {
     }
 
     const data = getPage(books, page, limit);
-    const links = getLinks(books, page, limit, filter, sort);
-    const meta = getMeta(books, limit);
+    const links = getLinks(books, page, limit, filter, sort, author, genre);
+    const meta = getMeta(books, page, limit);
 
     res.send({
       links,
