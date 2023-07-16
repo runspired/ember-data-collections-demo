@@ -1,6 +1,6 @@
 'use strict';
 const RAW_BOOKS = require('./MOCK_DATA.json');
-const DEFAULT_LIMIT = 25;
+const DEFAULT_LIMIT = 20;
 const BOOKS = RAW_BOOKS.map((book, index) => {
   return {
     id: `${index + 1}`,

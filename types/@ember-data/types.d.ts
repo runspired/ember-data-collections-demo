@@ -1,4 +1,5 @@
 export interface Collection<T> {
+  next(): Promise<Collection<T> | null>;
   links: {
     self: string;
     first: string;

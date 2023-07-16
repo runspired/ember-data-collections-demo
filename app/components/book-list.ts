@@ -5,7 +5,9 @@ import type Book from 'collection-demo/models/book';
 import { cached, tracked } from '@glimmer/tracking';
 import type { Collection } from '@ember-data/types';
 import { query } from '@ember-data/json-api/request';
-import { assert } from '@ember/debug';
+import { filterEmpty } from '@ember-data/request-utils';
+import { PaginationLinks } from 'collection-demo/utils/pagination-links';
+
 export interface BookListSignature {
   Element: HTMLDivElement;
   Args: {
@@ -18,55 +20,8 @@ export interface BookListSignature {
   };
 }
 
-class PaginationLinks {
-  declare _pages: string[];
-  @tracked declare pages: string[];
-
-  addPage(page: Collection<unknown>) {
-    let { _pages } = this;
-    const { pagesTotal, currentPage } = page.meta;
-
-    if (currentPage === 1 && (!_pages || _pages[0] !== page.links.self)) {
-      _pages = this._pages = new Array(pagesTotal).fill('.');
-    } else if (pagesTotal !== _pages.length) {
-      const cached = _pages;
-      _pages = this._pages = new Array(pagesTotal).fill('.');
-      for (let i = 0; i < pagesTotal; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        _pages[i] = cached[i]!;
-      }
-    }
-    const pages = _pages;
-
-    pages[currentPage - 1] = page.links.self;
-
-    pages[0] = page.links.first;
-    pages[pagesTotal - 1] = page.links.last;
-    if (pagesTotal > 1 && currentPage > 1) {
-      assert('previous page should exist', page.links.prev);
-      pages[currentPage - 2] = page.links.prev;
-    }
-    if (pagesTotal > 1 && currentPage < pagesTotal - 1) {
-      assert('next page should exist', page.links.next);
-      pages[currentPage] = page.links.next;
-    }
-
-    this.pages = pages;
-  }
-}
-
 class AsyncContent<T> {
   @tracked content: T | undefined;
-}
-
-function filterEmpty(obj: Record<string, unknown>): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
-  for (const key in obj) {
-    if (obj[key]) {
-      result[key] = obj[key];
-    }
-  }
-  return result;
 }
 
 export default class BookListComponent extends Component<BookListSignature> {

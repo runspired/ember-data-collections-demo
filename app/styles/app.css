@@ -12,3 +12,29 @@ table td {
   padding: .5rem;
   vertical-align: top;
 }
+
+.scroll-container {
+  height: 75vh;
+  overflow-y: scroll;
+  border: 1px solid black;
+  padding: .25rem;
+  position: relative;
+}
+
+.scroll-container ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  display: block;
+  min-height: 100%;
+}
+
+.scroll-container ul li {
+  padding: .5rem 0;
+  border-bottom: 1px dashed grey;
+}
+
+.scroll-container ul li:nth-of-type(even) {
+  background-color: #eee;
+}
