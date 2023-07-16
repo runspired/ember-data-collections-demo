@@ -73,6 +73,14 @@ export const CurrentPage = resourceFactory(
             options = currentUrl ? { url: currentUrl } : firstPageOptions;
           }
 
+          /**
+           * TODO: make this its own resource so it can be used directly
+           *
+           * const books = use(Request(() => options));
+           *
+           * or something like that,
+           * that pushes the async/await handling out of this code, and in to the request code.
+           */
           const books = await store.request<Book>(options);
           dataWrapper.content = books.content;
           addPage(books.content);
