@@ -3,15 +3,15 @@
     <ul>
       {{#each this.books.data as |book|}}
         <li>
-          <strong>{{book.title}}</strong>
-          <br> by <em>{{book.author}}</em>
+          <strong>{{book.title}}</strong> ({{book.genre}}) - {{book.publicationDate}}
+          <br> by <em>{{book.author}}</em> ISBN: {{book.isbn}}
         </li>
       {{/each}}
     </ul>
     <div>
       {{#each this.links.pages as |link index|}}
         <PageLink @title="page {{add index 1}}" @link={{link}} @text="{{add index 1}}" @action={{this.updatePage}} />
-        {{#if (mod index 20)}}
+        {{#if (mod index 15)}}
           <br>
         {{/if}}
       {{/each}}

@@ -29,7 +29,7 @@
   </select>
 
   <label for="sortDirection">Direction</label>
-  <select name="sortDirection" id="sortDirection" disabled={{not this.sort}} {{on 'input' this.update}}>
+  <select name="sort direction" id="sortDirection" disabled={{not this.sort}} {{on 'input' this.update}}>
     {{#if this.sort}}
       <option value="asc" selected={{eq this.sortDirection "asc"}}>Ascending</option>
       <option value="desc" selected={{eq this.sortDirection "desc"}}>Descending</option>
@@ -37,6 +37,26 @@
       <option value="">--</option>
     {{/if}}
   </select>
+
+  {{#if this.sort}}
+    <label for="sort2">Then Sort By</label>
+    <select name="secondary sort" id="sort2" {{on 'input' this.update}}>
+      <option value="">--</option>
+      {{#each this.sortOptions as |sortOption|}}
+        <option value={{sortOption}} selected={{eq this.sort2 sortOption}}>{{sortOption}}</option>
+      {{/each}}
+    </select>
+
+    <label for="sort2Direction">Direction</label>
+    <select name="secondary sort direction" id="sort2Direction" disabled={{not this.sort2}} {{on 'input' this.update}}>
+      {{#if this.sort2}}
+        <option value="asc" selected={{eq this.sort2Direction "asc"}}>Ascending</option>
+        <option value="desc" selected={{eq this.sort2Direction "desc"}}>Descending</option>
+      {{else}}
+        <option value="">--</option>
+      {{/if}}
+    </select>
+  {{/if}}
 
   <hr>
 </div>

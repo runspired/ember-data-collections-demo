@@ -8,17 +8,27 @@ export interface BookSearchSignature {
   Args: null;
 }
 
-type SearchKeys = 'sort' | 'title' | 'genre' | 'author' | 'sortDirection';
+type SearchKeys =
+  | 'sort2'
+  | 'sort'
+  | 'title'
+  | 'genre'
+  | 'author'
+  | 'sortDirection'
+  | 'sort2Direction';
 
 export default class BookListComponent extends Component<BookSearchSignature> {
   @service declare store: Store;
 
   @tracked sort: string | null = 'title';
+  @tracked sort2: string | null = 'publicationDate';
   @tracked title: string | null = null;
   @tracked genre: string | null = null;
   @tracked author: string | null = null;
   @tracked sortDirection = 'asc';
+  @tracked sort2Direction = 'asc';
   _lastSortDirection = 'asc';
+  _lastSort2Direction = 'asc';
 
   @cached
   get sortOptions() {
@@ -31,12 +41,15 @@ export default class BookListComponent extends Component<BookSearchSignature> {
 
   @cached
   get sortQuery() {
-    return this.sort ? `${this.sort}:${this.sortDirection}` : '';
+    const sort1 = this.sort ? `${this.sort}:${this.sortDirection}` : '';
+    const sort2 =
+      sort1 && this.sort2 ? `${this.sort2}:${this.sort2Direction}` : '';
+    return sort2 ? `${sort1},${sort2}` : sort1;
   }
 
   update = (event: InputEvent & { target: HTMLInputElement }) => {
     event.preventDefault();
-    const name = event.target.name as SearchKeys;
+    const name = event.target.id as SearchKeys;
     this[name] = event.target.value;
 
     if (name === 'sort') {
@@ -47,6 +60,16 @@ export default class BookListComponent extends Component<BookSearchSignature> {
           ? 'asc'
           : this._lastSortDirection;
       this._lastSortDirection = this.sortDirection;
+    }
+
+    if (name === 'sort2') {
+      this.sort2Direction =
+        event.target.value === ''
+          ? ''
+          : this._lastSort2Direction === ''
+          ? 'asc'
+          : this._lastSort2Direction;
+      this._lastSort2Direction = this.sort2Direction;
     }
   };
 }

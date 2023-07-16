@@ -133,15 +133,29 @@ module.exports = function (app) {
     }
 
     if (sort) {
-      if (!filter) {
+      if (!filter && !author && !genre) {
         books = books.slice();
       }
-      const [field, order] = sort.split(':');
+      const fields = sort.split(',').map((field) => field.split(':'));
+
       books.sort((a, b) => {
-        if (order === 'asc') {
-          return a.attributes[field] > b.attributes[field] ? 1 : -1;
-        } else {
-          return a.attributes[field] < b.attributes[field] ? 1 : -1;
+        for (let [field, order] of fields) {
+          const valA =
+            field === 'publicationDate'
+              ? new Date(a.attributes[field]).getTime()
+              : a.attributes[field];
+          const valB =
+            field === 'publicationDate'
+              ? new Date(b.attributes[field]).getTime()
+              : b.attributes[field];
+          if (valA === valB) {
+            continue;
+          }
+          if (order === 'asc') {
+            return valA > valB ? 1 : -1;
+          } else {
+            return valA < valB ? 1 : -1;
+          }
         }
       });
     }
