@@ -12,6 +12,8 @@ export interface BookListSignature {
     filter: string | null;
     genre: string | null;
     author: string | null;
+    page: number | null;
+    limit: number | null;
   };
 }
 
@@ -23,7 +25,7 @@ export default class BookListComponent extends Component<BookListSignature> {
 
   _firstPage: Collection<Book> | null = null;
   async getFirstPage() {
-    const { sort, filter, genre, author } = this.args;
+    const { sort, filter, genre, author, page, limit } = this.args;
 
     const base = '/api/books';
     const params = [];
@@ -37,12 +39,17 @@ export default class BookListComponent extends Component<BookListSignature> {
     if (genre) {
       params.push(`genre=${genre}`);
     }
-    params.push('page=1', 'limit=10');
+    if (page) {
+      params.push(`page=${page}`);
+    }
+    if (limit) {
+      params.push(`limit=${limit}`);
+    }
     if (sort) {
       params.push(`sort=${sort}`);
     }
 
-    const url = `${base}?${params.join('&')}`;
+    const url = params.length ? `${base}?${params.join('&')}` : base;
     const books = await this.getPage(url);
     this._firstPage = books.content;
   }
@@ -58,6 +65,8 @@ export default class BookListComponent extends Component<BookListSignature> {
   };
 
   reset = () => {
-    this.books = this._firstPage;
+    if (this.books) {
+      this.getPage(this.books.links.first);
+    }
   };
 }

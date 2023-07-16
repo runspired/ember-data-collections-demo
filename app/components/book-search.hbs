@@ -3,7 +3,7 @@
   <select name="author" id="author" {{on 'input' this.update}}>
     <option value="">--</option>
     {{#each @authors as |author|}}
-      <option value={{author.name}}>{{author.name}}</option>
+      <option value={{author.name}} selected={{eq this.author author.name}}>{{author.name}}</option>
     {{/each}}
   </select>
 
@@ -11,7 +11,7 @@
   <select name="genre" id="genre" {{on 'input' this.update}}>
     <option value="">--</option>
     {{#each @genres as |genre|}}
-      <option value={{genre.name}}>{{genre.name}}</option>
+      <option value={{genre.name}} selected={{eq this.genre genre.name}}>{{genre.name}}</option>
     {{/each}}
   </select>
 
@@ -24,16 +24,15 @@
   <select name="sort" id="sort" {{on 'input' this.update}}>
     <option value="">--</option>
     {{#each this.sortOptions as |sortOption|}}
-      <option value={{sortOption}}>{{sortOption}}</option>
+      <option value={{sortOption}} selected={{eq this.sort sortOption}}>{{sortOption}}</option>
     {{/each}}
   </select>
 
   <label for="sortDirection">Direction</label>
   <select name="sortDirection" id="sortDirection" disabled={{not this.sort}} {{on 'input' this.update}}>
-
     {{#if this.sort}}
-      <option value="asc">Ascending</option>
-      <option value="desc">Descending</option>
+      <option value="asc" selected={{eq this.sortDirection "asc"}}>Ascending</option>
+      <option value="desc" selected={{eq this.sortDirection "desc"}}>Descending</option>
     {{else}}
       <option value="">--</option>
     {{/if}}
@@ -41,4 +40,4 @@
 
   <hr>
 </div>
-<BookList @genre={{this.genre}} @author={{this.author}} @filter={{this.filter}} />
+<BookList @genre={{this.genre}} @author={{this.author}} @filter={{this.title}} @sort={{this.sortQuery}} />

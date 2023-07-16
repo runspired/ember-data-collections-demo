@@ -9,7 +9,11 @@
       {{/each}}
     </ul>
     <div>
-
+      <button title="previous page" type="button" {{on 'click' (fn this.getPage this.books.links.prev)}} disabled={{not this.books.links.prev}}>≪</button>
+      <button title="first page" type="button" {{on 'click' (fn this.getPage this.books.links.first)}} disabled={{not this.books.links.first}}>1</button>
+      ...
+      <button title="last page" type="button" {{on 'click' (fn this.getPage this.books.links.last)}} disabled={{not this.books.links.last}}>{{this.books.meta.pages}}</button>
+      <button title="next page" type="button" {{on 'click' (fn this.getPage this.books.links.next)}} disabled={{not this.books.links.next}}>≫</button>
     </div>
   {{else}}
     <p>No books found</p>

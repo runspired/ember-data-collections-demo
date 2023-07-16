@@ -1,5 +1,6 @@
 'use strict';
 const RAW_BOOKS = require('./MOCK_DATA.json');
+const DEFAULT_LIMIT = 25;
 const BOOKS = RAW_BOOKS.map((book, index) => {
   return {
     id: `${index + 1}`,
@@ -38,13 +39,13 @@ const CATEGORIES = RAW_BOOKS.reduce((acc, book) => {
   return resource;
 });
 
-function getPage(books, page = 1, limit = 10) {
+function getPage(books, page = 1, limit = DEFAULT_LIMIT) {
   let start = (page - 1) * limit;
   let end = page * limit;
   return books.slice(start, end);
 }
 
-function buildLink(page = 1, limit = 10, filter, sort) {
+function buildLink(page = 1, limit = DEFAULT_LIMIT, filter, sort) {
   let url = '/api/books';
   let params = [];
   if (page) {
@@ -90,7 +91,7 @@ module.exports = function (app) {
     const { sort, filter, author, genre } = req.query;
     let { page, limit } = req.query;
     page = parseInt(page, 10) || 1;
-    limit = parseInt(limit, 10) || 10;
+    limit = parseInt(limit, 10) || DEFAULT_LIMIT;
     let books = BOOKS;
 
     if (author) {

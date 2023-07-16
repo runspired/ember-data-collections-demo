@@ -13,12 +13,12 @@ type SearchKeys = 'sort' | 'filter' | 'genre' | 'author' | 'sortDirection';
 export default class BookListComponent extends Component<BookSearchSignature> {
   @service declare store: Store;
 
-  @tracked sort: string | null = null;
+  @tracked sort: string | null = 'title';
   @tracked filter: string | null = null;
   @tracked genre: string | null = null;
   @tracked author: string | null = null;
-  @tracked sortDirection = '';
-  _lastSortDirection = '';
+  @tracked sortDirection = 'asc';
+  _lastSortDirection = 'asc';
 
   @cached
   get sortOptions() {
@@ -27,6 +27,11 @@ export default class BookListComponent extends Component<BookSearchSignature> {
         .getSchemaDefinitionService()
         .attributesDefinitionFor({ type: 'book' })
     );
+  }
+
+  @cached
+  get sortQuery() {
+    return this.sort ? `${this.sort}:${this.sortDirection}` : '';
   }
 
   update = (event: InputEvent & { target: HTMLInputElement }) => {
