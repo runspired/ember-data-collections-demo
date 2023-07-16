@@ -37,4 +37,22 @@ export class PaginationLinks {
 
     this.pages = pages;
   }
+
+  get filteredPages() {
+    const { pages } = this;
+    const filtered: { index: number; link: string }[] = [];
+
+    for (let i = 0; i < pages.length; i++) {
+      if (pages[i] !== '.') {
+        filtered.push({ index: i + 1, link: pages[i] as string });
+      } else if (
+        filtered.length > 0 &&
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        filtered[filtered.length - 1]!.link !== '...'
+      ) {
+        filtered.push({ index: i + 1, link: '...' });
+      }
+    }
+    return filtered;
+  }
 }

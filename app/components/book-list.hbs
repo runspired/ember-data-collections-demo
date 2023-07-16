@@ -9,9 +9,9 @@
       {{/each}}
     </ul>
     <div>
-      {{#each this.links.pages as |link index|}}
-        <PageLink @title="page {{add index 1}}" @link={{link}} @text="{{add index 1}}" @action={{this.updatePage}} />
-        {{#if (mod index 10)}}
+      {{#each this.links.filteredPages as |page|}}
+        <PageLink class={{if (eq page.link this.books.links.self) 'active'}} @title="page {{page.index}}" @link={{page.link}} @text="{{page.index}}" @action={{this.updatePage}} />
+        {{#if (mod page.index 11)}}
           <br>
         {{/if}}
       {{/each}}

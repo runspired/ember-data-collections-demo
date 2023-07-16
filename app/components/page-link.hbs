@@ -1,5 +1,3 @@
-{{#if (eq @link '.')}}
-.
-{{else}}
-<button title="{{@title}}" type="button" {{on "click" (fn @action @link)}} disabled={{not @link}}>{{@text}}</button>
+{{#if (or (eq @link '.') (eq @link '...'))}}{{@link}}{{else}}
+<button ...attributes title="{{@title}}" type="button" {{on "click" (fn @action @link)}} disabled={{not @link}}>{{@text}}</button>
 {{/if}}

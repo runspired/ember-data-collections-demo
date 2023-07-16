@@ -13,6 +13,11 @@ table td {
   vertical-align: top;
 }
 
+button.active {
+  background-color: cyan;
+  border-radius: 3px;
+}
+
 .scroll-container {
   height: 75vh;
   overflow-y: scroll;
